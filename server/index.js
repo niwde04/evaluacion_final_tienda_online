@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const express = require('express'),
     app = express(),
-    port = 3001
+    port = 3004
 app.use(express.json());
 
 app.use(function(req, res, next) {
@@ -34,14 +34,14 @@ app.get('/crearUsuario', function (req, res) {
                     password: '1234'
                 }); // crea la entidad
                 user.save(); // guarda en bd
-            } else {
+
                 res.status(200).json({
                     success: true,
                     message: "Usuario creado correctamente",
                     payload: usuarios
                 })
-            }
 
+            } 
         }
     })
 })

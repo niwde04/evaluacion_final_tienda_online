@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import {Grid,Paper,Avatar,TextField} from '@material-ui/core'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Button from '@material-ui/core/Button';
 import '../css/Login.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-const baseUrl = "http://localhost:3001/Login"
+
+const baseUrl = "http://localhost:3004/Login"
 const cookies = new Cookies();
 
 
@@ -42,40 +45,19 @@ class Login extends Component {
     }
 
     render() {
+        const avatarStyle ={backgroundColor:'#1bbd7e'}
         return (
-
-            <div className="mainContainer">
-                <div className="secondContainer">
-                    <div className="form-group">
-                        <label>Usuario: </label>
-                        <br />
-                        <input
-                            type="text"
-                            className="form-control"
-                            name="username"
-                            onChange={this.handleChange}
-                        />
-                        <br />
-                        <label>Password: </label>
-                        <br />
-                        <input
-                            type="password"
-                            className="form-control"
-                            name="password"
-                            onChange={this.handleChange}
-                        />
-                        <br />
-                        <button className="btn btn-primary" onClick={() => this.login()}>Iniciar Sesion </button>
-
-
-                    </div>
-
-
-                </div>
-
-
-            </div>
-
+            <Grid>
+                <Paper id="paperLogin" elevation={10}>
+                    <Grid align='center'>
+                        <Avatar style={avatarStyle}> <LockOutlinedIcon/></Avatar>
+                        <h2>Sing in</h2>
+                    </Grid>
+                    <TextField name='username'label='Usuario' placeholder='Ingrese usuario' fullWidth required onChange={this.handleChange}></TextField>
+                    <TextField name='password'label='Contraseña' placeholder='Ingrese Contraseña' type='password' fullWidth required onChange={this.handleChange}></TextField>
+                    <Button type='submit' color='primary' fullWidth variant='contained' onClick={() => this.login()}>Ingresar</Button>
+                </Paper>
+            </Grid>
         )
     }
 }
