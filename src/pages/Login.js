@@ -5,9 +5,22 @@ import Button from '@material-ui/core/Button';
 import '../css/Login.css';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-
+import background from '../images/login-fondo.jpg'
 const baseUrl = "http://localhost:3004/Login"
 const cookies = new Cookies();
+
+const divStyle = {
+  
+    backgroundImage: `url(${background})`,
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    position: "absolute",
+    height: "100vh",
+    width: "100vw",
+    backgroundPosition: "center" 
+  };
+
+
 
 
 class Login extends Component {
@@ -47,17 +60,20 @@ class Login extends Component {
     render() {
         const avatarStyle ={backgroundColor:'#1bbd7e'}
         return (
-            <Grid>
-                <Paper id="paperLogin" elevation={10}>
-                    <Grid align='center'>
-                        <Avatar style={avatarStyle}> <LockOutlinedIcon/></Avatar>
-                        <h2>Sing in</h2>
-                    </Grid>
-                    <TextField name='username'label='Usuario' placeholder='Ingrese usuario' fullWidth required onChange={this.handleChange}></TextField>
-                    <TextField name='password'label='Contraseña' placeholder='Ingrese Contraseña' type='password' fullWidth required onChange={this.handleChange}></TextField>
-                    <Button type='submit' color='primary' fullWidth variant='contained' onClick={() => this.login()}>Ingresar</Button>
-                </Paper>
-            </Grid>
+
+            <body style={divStyle}>
+                <Grid>
+                    <Paper id="paperLogin" elevation={10}>
+                        <Grid align='center'>
+                            <Avatar style={avatarStyle}> <LockOutlinedIcon/></Avatar>
+                            <h2>Sing in</h2>
+                        </Grid>
+                        <TextField name='username'label='Usuario' placeholder='Ingrese usuario' fullWidth required onChange={this.handleChange}></TextField>
+                        <TextField name='password'label='Contraseña' placeholder='Ingrese Contraseña' type='password' fullWidth required onChange={this.handleChange}></TextField>
+                        <Button type='submit' color='primary' fullWidth variant='contained' onClick={() => this.login()}>Ingresar</Button>
+                    </Paper>
+                </Grid>
+            </body>
         )
     }
 }

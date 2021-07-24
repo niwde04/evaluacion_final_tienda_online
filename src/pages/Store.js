@@ -1,30 +1,16 @@
-import { ThemeProvider, Typography } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core';
 import React from 'react';
 import { Navbar } from '../components/Navbar';
 import theme from '../themeConfig'
 import Caja from '../components/Caja'
 import '../css/Login.css';
-import axios from 'axios';
-const baseUrl = "http://localhost:3004/productos"
+import background from '../images/main-fondo.jpg'
 
 
 function App(){
 
-  axios.get(baseUrl)
-  .then(function (response) {
-    // handle success
-    console.log(response);
-
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
- 
-  
-
   return(
-<div id= 'mainStore'>
+<div id= 'mainStore' style={{  backgroundImage: `url(${background})` }}>
  <ThemeProvider  theme = {theme} >
 
    <Navbar />
