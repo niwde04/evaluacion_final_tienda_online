@@ -10,12 +10,16 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import VerMas from "../components/VerMas";
 
 
 import img from '../../src/imagenes.js'
+
 
 
 
@@ -75,20 +79,51 @@ const useStyles = makeStyles((theme) => ({
 
 const Caja = () => {
 
-    const baseUrl = "http://localhost:3004/productos"
-    const baseUrlFindProducto = "http://localhost:3004/buscarProducto/"
 
+    const baseUrlFindProducto = "http://localhost:3004/buscarProducto/"
+    const baseUrlFindProductoId = "http://localhost:3004/buscarProductoId/"
 
     const classes = useStyles();
 
 
     const [productos, setProductos] = React.useState([])
+    const [productosVerMas, setProductosVerMas] = React.useState([])
+    const [open, setOpen] = React.useState(false);
+    const [productoCarrito, setProductoCarrito] = React.useState(false);
 
     React.useEffect(() => {
         console.log("Use Effect")
         buscarProductos("")
 
     }, []);
+
+
+    
+  const agregarCarrito = e => {
+    //e.preventDefault()
+
+    console.log(e)
+
+ /*
+    console.log(productoCarrito)
+    
+    setProductoCarrito([
+      ...productoCarrito,
+     
+      {
+        _id: productoCarrito._id,
+        descripcion: productoCarrito.descripcion,
+        urlImagen: productoCarrito.urlImagen,
+        precio: productoCarrito.precio,
+        unidadesPedidas: productoCarrito.descripcion,
+        __v: 0
+      }
+
+    ])
+    setProductoCarrito('')
+   */ 
+  }
+
 
 
 
@@ -109,8 +144,6 @@ const Caja = () => {
                     const productosData = response.data
 
                     setProductos(productosData)
-
-
                 })
                 .catch(function (error) {
                     // handle error
@@ -119,48 +152,77 @@ const Caja = () => {
     }
 
 
-
-    function SimpleDialog(props) {
-        const classes = useStyles();
-        const { onClose, selectedValue, open } = props;
-
-        const handleClose = () => {
-            onClose(selectedValue);
-        };
-
+    async function response(e) {
+        const response = await axios.get(baseUrlFindProductoId,
+            {
+                params: {
+                    _id: e
+                }
+            })
 
 
-        return (
-            <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-                <DialogTitle id="simple-dialog-title">Mas informacion de la manzana</DialogTitle>
-                <h1>HOla</h1>
-            </Dialog>
-        );
+        setProductosVerMas(response.data)
+        console.log(response.data)
     }
 
+    const handleClickOpen = async (id) => {
 
-    const [open, setOpen] = React.useState(false);
-
-
-    const handleClickOpen = () => {
+        await response(id);
         setOpen(true);
+
     };
 
     const handleClose = () => {
         setOpen(false);
-
     };
 
-
+    
 
     return (
         <div>
+
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+
+                </DialogTitle>
+                <DialogContent>
+
+                    <DialogContentText id="alert-dialog-description">
+                        <Typography variant="h4" color="initial">
+                            {(productosVerMas[0]?.descripcion)}
+
+                        </Typography>
+
+                        <VerMas
+
+                            urlImagen={(productosVerMas[0]?.urlImagen)}
+                            precio={(productosVerMas[0]?.precio)}
+                            unidades={(productosVerMas[0]?.unidadesDisponibles)}
+
+                        />
+
+                    </DialogContentText>
+
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Atras
+                    </Button>
+
+                </DialogActions>
+            </Dialog>
+
             <Paper className={classes.paper} >
                 <Grid container >
                     <Grid item xs={8}>
                         <Box color='primary.main'  >
-                            <Typography variant="h6" color="initial">
-                                <h1>Catalogo de Productos</h1>
+                            <Typography variant="h3" color="initial">
+                                Catalogo de Productos
                             </Typography>
                         </Box>
 
@@ -170,7 +232,7 @@ const Caja = () => {
                         <Box color='primary.main'  >
 
                             <Typography variant="h6" color="initial">
-                                <h3>Que estas buscando?</h3>
+                                Que estas buscando?
                             </Typography>
 
                             <Box color='primary.main' mr={0}>
@@ -232,23 +294,31 @@ const Caja = () => {
                                             <form noValidate autoComplete="off">
 
                                                 <div className={classes.formCard}>
-                                                    <Button size="small" variant="contained" color="primary" onClick={handleClickOpen}>
+                                                    <Button size="small" variant="contained" color="primary"
+
+                                                        onClick={() => handleClickOpen(item._id)}>
                                                         Ver mas
                                                     </Button>
 
-                                                    <SimpleDialog open={open} onClose={handleClose} />
 
-                                                    <Button size="small" variant="contained" color="primary">
+
+                                                    <Button size="small" variant="contained" color="primary"
+                                                    
+                                                        onClick={() => agregarCarrito(item)}>
+
                                                         Añadir
+
                                                     </Button>
 
                                                     <TextField
 
                                                         id="standard-number"
-                                                        label=""
+
                                                         type="number"
                                                         InputLabelProps={{ shrink: true }}
-                                                        InputProps={{ inputProps: { min: "1", max: "99", step: "1" } }}
+                                                        defaultValue={1}
+                                                        InputProps={{ inputProps: { min: "0", max: "99", step: "1" } }}
+
 
                                                     />
                                                 </div>
