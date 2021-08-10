@@ -16,6 +16,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import VerMas from "../components/VerMas";
+import Navbar from "../components/Navbar";
+
+
+
 
 
 import img from '../../src/imagenes.js'
@@ -31,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     cardRoot: {
         marginTop: 20,
         maxWidth: '100%',
-        marginRight: 20,
+        marginRight: 20
     },
 
     cardMedia: {
@@ -60,9 +64,11 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         padding: theme.spacing(2),
         textAlign: 'center',
-        color: theme.palette.text.secondary,
-        margin: 20,
-        width: "80%"
+        color: theme.palette.text.secondary,        
+        margin: "auto",
+        width: "90%" 
+     
+      
     },
 
     flexcolscroll: {
@@ -89,7 +95,9 @@ const Caja = () => {
     const [productos, setProductos] = React.useState([])
     const [productosVerMas, setProductosVerMas] = React.useState([])
     const [open, setOpen] = React.useState(false);
-    const [productoCarrito, setProductoCarrito] = React.useState(false);
+    const [productoCarrito, setProductoCarrito] = React.useState([]);
+    const [cantidadProducto, setCantidadProducto] = React.useState(1);
+    const [cantidadCarrito, setCantidadCarrito] = React.useState(0);
 
     React.useEffect(() => {
         console.log("Use Effect")
@@ -98,34 +106,34 @@ const Caja = () => {
     }, []);
 
 
-    
-  const agregarCarrito = e => {
-    //e.preventDefault()
 
-    console.log(e)
+    const agregarCarrito = async (e) => {
+        // e.preventDefault()
 
- /*
-    console.log(productoCarrito)
-    
-    setProductoCarrito([
-      ...productoCarrito,
-     
-      {
-        _id: productoCarrito._id,
-        descripcion: productoCarrito.descripcion,
-        urlImagen: productoCarrito.urlImagen,
-        precio: productoCarrito.precio,
-        unidadesPedidas: productoCarrito.descripcion,
-        __v: 0
-      }
+        const mappingProducto = {
+            _id: e._id,
+            descripcion: e.descripcion,
+            urlImagen: e.urlImagen,
+            precio: e.precio,
+            pedidos: cantidadProducto,
+            unidadesDisponibles: e.unidadesDisponibles,
+            nuevaDisponibilidad: e.unidadesDisponibles - cantidadProducto,
+            __v: 0
 
-    ])
-    setProductoCarrito('')
-   */ 
-  }
+        }
+
+        await setProductoCarrito([mappingProducto])
+
+        setProductoCarrito([
+            ...productoCarrito,
+            mappingProducto
+        ])
 
 
+        setCantidadCarrito(productoCarrito.length + 1)
 
+
+    }
 
     const buscarProductos = async (e) => {
 
@@ -165,6 +173,7 @@ const Caja = () => {
         console.log(response.data)
     }
 
+
     const handleClickOpen = async (id) => {
 
         await response(id);
@@ -176,10 +185,15 @@ const Caja = () => {
         setOpen(false);
     };
 
-    
+
 
     return (
-        <div>
+        <div >
+            <Navbar
+                cantidad={cantidadCarrito}
+                carrito={productoCarrito}
+                updateProducts = {buscarProductos}
+            />
 
             <Dialog
                 open={open}
@@ -217,7 +231,7 @@ const Caja = () => {
                 </DialogActions>
             </Dialog>
 
-            <Paper className={classes.paper} >
+            <Paper className={classes.paper}  >
                 <Grid container >
                     <Grid item xs={8}>
                         <Box color='primary.main'  >
@@ -256,15 +270,13 @@ const Caja = () => {
 
                     </Grid>
 
-                    <Grid container className={classes.flexcolscroll} style={{ height: '60vh', width: '100%' }} >
+                    <Grid container className={classes.flexcolscroll} style={{ height: '70vh', width: '100%' }} >
 
                         {
 
                             productos.map(item => (
 
-
-
-                                <Grid item xs={6} sm={4} lg={3}>
+                                <Grid item lg={2} md={4} sm={6} xs ={12}>
 
                                     <Card className={classes.cardRoot}>
 
@@ -300,10 +312,8 @@ const Caja = () => {
                                                         Ver mas
                                                     </Button>
 
-
-
                                                     <Button size="small" variant="contained" color="primary"
-                                                    
+
                                                         onClick={() => agregarCarrito(item)}>
 
                                                         Añadir
@@ -316,6 +326,7 @@ const Caja = () => {
 
                                                         type="number"
                                                         InputLabelProps={{ shrink: true }}
+                                                        onChange={e => setCantidadProducto(e.target.value)}
                                                         defaultValue={1}
                                                         InputProps={{ inputProps: { min: "0", max: "99", step: "1" } }}
 

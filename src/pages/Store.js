@@ -10,10 +10,24 @@ import background from '../images/main-fondo.jpg'
 function App(){
 
   return(
-<div id= 'mainStore' style={{  backgroundImage: `url(${background})` }}>
+
+    
+<div id= 'mainStore' 
+style=
+
+{{  
+  backgroundImage: `url(${background})`,
+  backgroundSize: "cover",
+  backgroundPosition : "center",
+  width: "100%",
+  height: "100vh ",
+  backgroundRepeat: "no-repeat"
+}}
+
+>
  <ThemeProvider  theme = {theme} >
 
-   <Navbar />
+  
    <Caja />
 
 

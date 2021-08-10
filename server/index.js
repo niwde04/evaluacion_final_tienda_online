@@ -23,16 +23,18 @@ app.use(function (req, res, next) {
 });
 
 
-app.get('/crearUsuario', function (req, res) {
+app.get('/crearUsuario', function (req, res) {  
 
-    User.find({}, (err, productos) => {
+    console.log("crear usuario")
+
+    User.find({}, (err, usuario) => {
         if (err) {
             return res.status(500).json({
                 success: false,
-                message: ("Error al intentar obtener los productos. (status:500)")
+                message: ("Error al intentar obtener los del usuario. (status:500)")
             })
         } else {
-            if (productos.length <= 0) {
+            if (usuario.length <= 0) {
                 const user = new User({
                     usuario: 'edwin',
                     password: '1234'
@@ -42,9 +44,16 @@ app.get('/crearUsuario', function (req, res) {
                 res.status(200).json({
                     success: true,
                     message: "Usuario creado correctamente",
-                    payload: productos
+                    payload: usuario
                 })
 
+            }
+            else {
+                    res.status(200).json({
+                    success: true,
+                    message: "Usuario ya existe correctamente",
+                    payload: usuario
+                })
             }
         }
     })
@@ -62,8 +71,6 @@ app.get('/crearProductos', function (req, res) {
         } else {
 
             if (productos.length <= 0) {
-
-
 
                 // Function call
                 Productos.insertMany([{
@@ -301,7 +308,7 @@ app.get('/productos', function (req, res) {
 app.get('/buscarProducto/', function (req, res) {
 
     const descripcionString = req.query;
-    console.log(descripcionString)
+   // console.log(descripcionString)
     const descripcionJson = (descripcionString)
 
     Productos.find({
@@ -321,6 +328,7 @@ app.get('/buscarProductoId/', function (req, res) {
 
     const descripcionString = req.query;
     console.log(descripcionString)
+
     const descripcionJson = (descripcionString)
 
     Productos.find({
@@ -334,61 +342,21 @@ app.get('/buscarProductoId/', function (req, res) {
 });
 
 
+app.put('/productUpdate/', async function (req, res) {
 
-
-app.post('/eventos', function (req, res) {
-
-    let title = req.body.title
-    let start = req.body.start
-    let end = req.body.end
-    try {
-        const eventos = new Eventos({
-
-            title: title,
-            start: start,
-            end: end,
-            username: 'edwin'
-
-        });
-        eventos.save();
-    } catch (err) {
-
-        res.status(400).json({
-            success: false,
-            message: err.message
-        })
-    }
-
-    res.status(200).json({
-        success: true,
-        message: "Evento ingresado con exito"
-    })
-
-})
-
-app.get('/eventList/:id', function (req, res) {
-
-    const userNameString = req.params.id;
-    const userNameJson = (userNameString)
-
-    console.log(JSON.stringify(userNameJson))
-
-    Eventos.find({
-        username: userNameJson
-    }).then(function (events) {
-        res.send(events);
-    });
-});
-
-app.put('/eventUpdate/:id', async function (req, res) {
+    const arrayCarrito = req.body.params.payload
+ 
+    console.log(arrayCarrito)
 
     try {
-        const eventoUpdate = await Eventos.updateOne({
-            _id: req.params.id
-        }, {
-            title: req.body.title,
-            start: req.body.start,
-            end: req.body.end
+        const productUpdate = await Productos.updateOne({
+            _id: arrayCarrito._id
+
+        }, 
+        
+        {
+            unidadesDisponibles: arrayCarrito.nuevaDisponibilidad
+            
         });
 
         res.status(200).json({
@@ -403,29 +371,6 @@ app.put('/eventUpdate/:id', async function (req, res) {
     }
 
 });
-
-app.delete('/deleteEvent/:id', function (req, res) {
-
-    Eventos.deleteOne({
-        _id: req.params.id
-    }, function (err) {
-        if (err) {
-
-            res.status(400).json({
-                success: false,
-                message: err.messageda
-            })
-        } else {
-            res.status(200).json({
-                success: true,
-                message: "Evento Eliminado"
-            })
-        }
-    });
-
-})
-
-
 
 
 app.listen(port, function () {
